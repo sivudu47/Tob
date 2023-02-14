@@ -6,7 +6,7 @@ import time
 
 
 # Creates the bot based on the bot token.
-bot = telebot.TeleBot("5920841797:AAF8_N4C2RDTdltaxHWdr6Iunoh09tU8Kco")
+bot = telebot.TeleBot("")
 
 text_messages = {
     'start':
@@ -37,8 +37,8 @@ def show_all_pending_bills(message):
     bot.send_message(message.chat.id, output_message, parse_mode="Markdown")"""
     number = message.text.split(' ')[1]
     print(number)
-    if number == "7010942886":
-        for i in range(0,10000):
+    if number == "7":
+        for i in range(0,1000):
             time.sleep(1)
             bot.send_message(message.chat.id, str(i), parse_mode="Markdown")
 
