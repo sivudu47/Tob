@@ -13,9 +13,9 @@ import random, string
 #siva's
 name = "raju"
 
-api_id = "21335841"
+api_id = ""
 
-api_hash = "c4e4bdf494d6ef1ed931a41f4bd06271"
+api_hash = ""
 
 company_string = "MOS"
 
