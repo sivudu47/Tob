@@ -6,6 +6,10 @@ from db import DBHelper
 import random, string
 import time
 from ratelimit import limits, sleep_and_retry
+import logging
+logging.basicConfig(filename = 'log.txt', level = logging.DEBUG, format = '%(asctime)s - %(levelname)s - %(message)s')
+
+logging.debug('Start of program')
 
 
 
@@ -18,9 +22,9 @@ db = DBHelper()
 #siva's
 name = "arya"
 
-api_id = "26993628"
+api_id = ""
 
-api_hash = "d216bb3832283b111204838893050869"
+api_hash = ""
 
 company_string = "MOS"
 
@@ -129,10 +133,31 @@ async def main():
                     msg_content = ""
                 msg_content += "பில் எண்:{}\nநீங்கள் இந்த பரிவர்த்தனையை செய்து {} நாட்கள் ஆகிவிட்டன\nபரிவர்த்தனை எண்: {}\nபரிவர்த்தனை தேதி: {}\nமொத்த தொகை : {}\nமீதமுள்ள தொகை: {}\n\n".format(bill_ids +1,datediff, invoice_no, transaction_date, total_amount, balance_amount)
             msg_content += "-----------------------------------------------------------------------\n\n"
-    import pdb;pdb.set_trace()
     if len(msg_content) > 1:
         time.sleep(sleep_time)
         await client.send_message(entity, msg_content)
+
+    msg_content = "இன்றைய விலையைக் கண்டறியவும்\n\n"
+    product_exists = False
+    for item, product in enumerate(today_product_details):
+        product_exists = True
+        if len(msg_content) > content_length:
+            time.sleep(sleep_time)
+            await client.send_message(entity, msg_content)
+            break
+            msg_content = ""
+        p_name = today_product_details[product][0]
+        p_price = today_product_details[product][1]
+        p_id = product
+        msg_content += "வரிசை எண்: {}\nதயாரிப்பு அடையாள எண்: {}\nதயாரிப்பின் பெயர்: {}\nவிலை: {}\n\n".format(item + 1,
+                                                                                                             p_id,
+                                                                                                             p_name,
+                                                                                                             p_price)
+    if product_exists:
+        time.sleep(sleep_time)
+        await client.send_message(entity, msg_content)
+    logging.debug(
+        'Owner Message Completed')
     #for individual messages
     for customer_id in customer_id_phone_no_mappings:
         bill_exists = False
@@ -152,7 +177,7 @@ async def main():
         if customer_id in customer_bill_details:
             unpaid_balance = customer_bill_details[customer_id][0]
             msg_content += "உங்கள் மொத்த செலுத்தப்படாத தொகை : {} Rupees\n\n".format(str(unpaid_balance))
-            msg_content += "நிலுவையில் உள்ள பரிவர்த்தனைகள் :\n\n".format(str(unpaid_balance))
+            msg_content += "{} நாட்களுக்கு மேல் நிலுவையில் உள்ள உங்களது பரிவர்த்தனைகள் :\n\n".format(str(no_of_days))
             current_customer_bill_details = customer_bill_details[customer_id][1]
             for bill_id, each_bill in enumerate(current_customer_bill_details):
                 if len(msg_content) > content_length:
@@ -210,6 +235,7 @@ async def main():
         if product_exists:
             time.sleep(sleep_time)
             await client.send_message(entity, msg_content)
+        logging.debug('Individual Message completed for {} , {} , {}'.format(customer_id, current_phone_number, current_name))
 
 
     """"#for debugging purpose
